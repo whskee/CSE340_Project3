@@ -1,5 +1,4 @@
-a.out
 .DS_Store
+.vscode
+a.out
 lexer copy.cc
-.vscode/launch.json
-.vscode/tasks.json

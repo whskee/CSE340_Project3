@@ -280,12 +280,19 @@ vector<Statement*> Parser::parse_stmt_list() {
     // } else {
     //     lexer.UngetToken(t);
     // }
-    parse_stmt();
+    Statement* stmt = parse_stmt();
+    if (stmt != NULL) {
+        stmt_list.push_back(stmt);
+        this->stmt_list.push_back(stmt);
+    }
 
     Token t = lexer.GetToken();
     lexer.UngetToken(t);
     if (t.token_type == IF || t.token_type == WHILE || t.token_type == SWITCH || t.token_type == WHILE || t.token_type == ID) {
-        parse_stmt_list();
+        vector<Statement*> stmt_list2 = parse_stmt_list();
+        for (int i = 0; i < stmt_list2.size(); i++) {
+            stmt_list.push_back(stmt_list2.at(i));
+        }
     }
 
     return stmt_list;
@@ -329,14 +336,15 @@ Statement* Parser::parse_stmt() {
 }
 
 Statement* Parser::parse_assignment_stmt() {
-    // cout << " Inside parse_assignment_stmt\n";
-    consume(ID);
+    Statement* stmt = new Statement();
+
+    Token t = consume(ID);
+    stmt->lhs = t.lexeme;
     consume(EQUAL);
     parse_expression();
-    // cout << " YEEEEE\n";
     consume(SEMICOLON);
-    // cout << " Exiting parse_assignment_stmt\n";
-    return NULL;
+
+    return stmt;
 }
 
 // TODO: Fix

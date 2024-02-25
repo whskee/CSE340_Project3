@@ -348,56 +348,94 @@ Statement* Parser::parse_assignment_stmt() {
 }
 
 // TODO: Fix
-void Parser::parse_expression() {
+vector<Token> Parser::parse_expression() {
     // cout << " Inside parse_expression\n";
 
+    // string expression;
     Token t = lexer.GetToken();
-    // cout << "                       TOKEN TYPE              " << t.token_type << "\n";
     lexer.UngetToken(t);
 
+    vector<Token> expression;
+
     if (t.token_type == ID || t.token_type == NUM || t.token_type == REALNUM || t.token_type == TRUE || t.token_type == FALSE) {
-        // cout << "                       TOKEN TYPE              " << t.token_type << "\n";
-        parse_primary();
+        expression.push_back(parse_primary());
     } else if (t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV || t.token_type == GREATER || t.token_type == LESS || t.token_type == GTEQ || t.token_type == LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL) {
-        // cout << "                       TOKEN TYPE              " << t.token_type << "\n";
-        parse_binary_operator();
-        parse_expression();
-        parse_expression();
+        expression.push_back(parse_binary_operator());
+
+        vector<Token> temp = parse_expression();
+        for (int i = 0; i < temp.size(); i++) {
+            expression.push_back(temp.at(i));
+        }
+
+        temp = parse_expression();
+        for (int i = 0; i < temp.size(); i++) {
+            expression.push_back(temp.at(i));
+        }
     } else if (t.token_type == NOT) {
-        parse_unary_operator();
-        parse_expression();
+        expression.push_back(parse_unary_operator());
+
+        vector<Token> temp = parse_expression();
+        for (int i = 0; i < temp.size(); i++) {
+            expression.push_back(temp.at(i));
+        }
     } else {
         syntax_error();
-        // cout << " Syntax Error\n";
     }
 
-    // cout << " BEFORE EXITING                      TOKEN TYPE              " << t.token_type << "\n";
-    // cout << " Exiting parse_expression\n";
+    return expression;
 }
 
-void Parser::parse_unary_operator() {
-    consume(NOT);
+// The type of unary_operator is bool
+Token Parser::parse_unary_operator() {
+    Token t = consume(NOT);
+    return t;
 }
 
-void Parser::parse_binary_operator() {
+Token Parser::parse_binary_operator() {
     // cout << " Inside binary_operator\n";
     Token t = lexer.GetToken();
-
+    lexer.UngetToken(t);
+    // t.Print();
     if (t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV || t.token_type == GREATER || t.token_type == LESS || t.token_type == GTEQ || t.token_type == LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL) {
         // cout << " Exiting binary_operator\n";
-        t.Print();
-        return;
+        // t.Print();
+        consume(t.token_type);
     } else {
         syntax_error();
     }
+
+    // if (t.token_type == PLUS) {
+    //     return "+";
+    // } else if (t.token_type == MINUS) {
+    //     return "-";
+    // } else if (t.token_type == MULT) {
+    //     return "*";
+    // } else if (t.token_type == DIV) {
+    //     return "/";
+    // } else if (t.token_type == GREATER) {
+    //     return ">";
+    // } else if (t.token_type == LESS) {
+    //     return "<";
+    // } else if (t.token_type == GTEQ) {
+    //     return ">=";
+    // } else if (t.token_type == LTEQ) {
+    //     return "<=";
+    // } else if (t.token_type == EQUAL) {
+    //     return "=";
+    // } else if (t.token_type == NOTEQUAL) {
+    //     return "<>";
+    // } else {
+    //     syntax_error();
+    // }
+
     // cout << " Exiting binary_operator\n";
+    return t;
 }
 
-void Parser::parse_primary() {
+Token Parser::parse_primary() {
     // cout << " Inside parse_primary\n";
     Token t = lexer.GetToken();
     lexer.UngetToken(t);
-    // cout << "                       TOKEN TYPE              " << t.token_type << "\n";
 
     if (t.token_type == ID) {
         consume(ID);
@@ -413,19 +451,27 @@ void Parser::parse_primary() {
         syntax_error();
     }
 
+    return t;
     // cout << " Exiting parse_primary\n";
 }
 
 void Parser::parse_if_stmt() {
     // cout << " Inside if_stmt\n";
-    Token t = consume(IF);
-    // Token t = lexer.GetToken();
-    // cout << "               TOKEN           " << t.token_type << "\n";
-    // t.Print();
-    t = consume(LPAREN);
-    // t.Print();
-    // cout << "               TOKEN           " << t.token_type << "\n";
-    parse_expression();
+    consume(IF);
+    consume(LPAREN);
+    vector<Token> tokens = parse_expression();
+
+    // cout << "\nSTARTING TOKEN LIST\n";
+    // for (Token i : tokens) {
+    //     i.Print();
+    // }
+    // cout << "\nENDING TOKEN LIST\n";
+
+    TokenType t = tokens.at(0).token_type;
+    if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL) {
+        cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
+    }
+
     consume(RPAREN);
     parse_body();
     // cout << " Exiting if_stmt\n";

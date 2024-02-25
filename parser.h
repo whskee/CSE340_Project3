@@ -43,25 +43,23 @@ class Parser {
    private:
     // Parse Functions
     set<string> parse_global_vars();
-    set<string> parse_var_decl_list();  // TODO
-    set<string> parse_var_decl();       // TODO
+    set<string> parse_var_decl_list();
+    set<string> parse_var_decl();
     set<string> parse_var_list();
-    void parse_type_name();            // TODO
-    vector<Statement *> parse_body();  // TODO
+    void parse_type_name();
+    vector<Statement *> parse_body();
     vector<Statement *> parse_stmt_list();
     Statement *parse_stmt();
     Statement *parse_assignment_stmt();
-    void parse_expression();
-    void parse_unary_operator();
-    void parse_binary_operator();
-    void parse_primary();
+    vector<Token> parse_expression();
+    Token parse_unary_operator();
+    Token parse_binary_operator();
+    Token parse_primary();
     void parse_if_stmt();
     void parse_while_stmt();
     void parse_switch_stmt();
-    void parse_case_list();       // TODO
-    void parse_case();       // TODO
-    set<string> parse_public_vars();    //??
-    set<string> parse_private_vars();   //??
+    void parse_case_list();
+    void parse_case();
 
     // Helper Functions
     void syntax_error();

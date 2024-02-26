@@ -69,8 +69,8 @@ void SymbolTable::printSymbolTable() {
 // This function consumes the next token in the list
 Token Parser::consume(TokenType expected_type) {
     Token t = lexer.GetToken();
+    // t.Print();
     // cout << "Expected Type: " << expected_type << "                   " << t.lexeme << "       " << t.token_type << "\n";
-    t.Print();
     // cout << "printed the statement\n";
     if (t.token_type != expected_type) {
         syntax_error();
@@ -206,6 +206,7 @@ set<string> Parser::parse_var_decl() {
     return var_decl;
 }
 
+// TODO: Explicit variables are declared in an var_list of a var_decl
 set<string> Parser::parse_var_list() {
     // cout << " Inside parse_var_list\n";
     set<string> var_list;
@@ -455,6 +456,7 @@ Token Parser::parse_primary() {
     // cout << " Exiting parse_primary\n";
 }
 
+// TODO
 void Parser::parse_if_stmt() {
     // cout << " Inside if_stmt\n";
     consume(IF);
@@ -467,9 +469,26 @@ void Parser::parse_if_stmt() {
     // }
     // cout << "\nENDING TOKEN LIST\n";
 
-    TokenType t = tokens.at(0).token_type;
-    if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL) {
+    TokenType type = tokens.at(0).token_type;
+    if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
         cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
+    } else {
+        for (int i = 1; i < tokens.size(); i++) {
+            string tokenType = "";
+            type = tokens.at(i).token_type;
+            if (type == NUM) {
+                tokenType = "int";
+            } else if (type == REALNUM) {
+                tokenType = "real";
+            } else if (type == TRUE) {
+                tokenType = "true";
+            } else if (type == FALSE) {
+                tokenType = "false";
+            } else {
+                cout << type << " NOT PRINTING\n";
+            }
+            cout << tokens.at(i).lexeme << ": " << tokenType << "\n";
+        }
     }
 
     consume(RPAREN);
@@ -481,7 +500,13 @@ void Parser::parse_while_stmt() {
     // cout << " Inside while_stmt\n";
     consume(WHILE);
     consume(LPAREN);
-    parse_expression();
+    vector<Token> tokens = parse_expression();
+
+    TokenType t = tokens.at(0).token_type;
+    if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL) {
+        cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
+    }
+
     consume(RPAREN);
     parse_body();
     // cout << " Exiting while_stmt\n";

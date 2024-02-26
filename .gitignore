@@ -2,3 +2,5 @@
 .vscode
 a.out
 lexer copy.cc
+parser copy.h
+parser copy.cc

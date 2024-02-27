@@ -168,6 +168,12 @@ vector<Token> Parser::parse_expression() {
         for (int i = 0; i < temp.size(); i++) {
             expression.push_back(temp.at(i));
         }
+
+        // TODO: The type of expression binary_operator op1 op2 is the same as the type of op1 and
+        // op2 if operator is PLUS, MINUS, MULT, or DIV. Note that op1 and op2 must have the
+        // same type due to C2
+        if (t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV) {
+        }
     } else if (t.token_type == NOT) {
         expression.push_back(parse_unary_operator());
 
@@ -271,11 +277,12 @@ void Parser::parse_if_stmt() {
 void Parser::parse_while_stmt() {
     consume(WHILE);
     consume(LPAREN);
-    vector<Token> tokens = parse_expression();
+    vector<Token> expression = parse_expression();
 
-    TokenType t = tokens.at(0).token_type;
+    TokenType t = expression.at(0).token_type;
     if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL && t != NOT) {
-        cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
+        cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
+        exit(1);
     }
 
     consume(RPAREN);
@@ -285,7 +292,12 @@ void Parser::parse_while_stmt() {
 void Parser::parse_switch_stmt() {
     consume(SWITCH);
     consume(LPAREN);
-    parse_expression();
+    vector<Token> expression = parse_expression();
+    // switch only contains an integer, so if there are unwanted tokens in the parameter list, it is a type mismatch
+    if (expression.size() > 1 || expression.at(0).token_type != INT) {
+        cout << "TYPE MISMATCH " << expression.at(0).line_no << " C5\n";
+        exit(1);
+    }
     consume(RPAREN);
     consume(LBRACE);
     parse_case_list();

@@ -124,16 +124,16 @@ void Parser::parse_stmt_list() {
 }
 
 void Parser::parse_stmt() {
-    Token u = lexer.GetToken();
-    lexer.UngetToken(u);
+    Token t = lexer.GetToken();
+    lexer.UngetToken(t);
 
-    if (u.token_type == ID) {
+    if (t.token_type == ID) {
         parse_assignment_stmt();
-    } else if (u.token_type == IF) {
+    } else if (t.token_type == IF) {
         parse_if_stmt();
-    } else if (u.token_type == WHILE) {
+    } else if (t.token_type == WHILE) {
         parse_while_stmt();
-    } else if (u.token_type == SWITCH) {
+    } else if (t.token_type == SWITCH) {
         parse_switch_stmt();
     } else {
         syntax_error();
@@ -228,8 +228,9 @@ void Parser::parse_if_stmt() {
     vector<Token> expression = parse_expression();
 
     TokenType type = expression.at(0).token_type;
+    //cout << expression.at(0).token_type << "\n";
     if (type == NOT) {
-        if (expression.at(1).token_type != TRUE || expression.at(1).token_type != FALSE) {
+        if ((expression.at(1).token_type != TRUE && expression.at(1).token_type != FALSE) || (expression.at(2).token_type != TRUE && expression.at(2).token_type != FALSE)) {
             cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
             exit(1);
         }

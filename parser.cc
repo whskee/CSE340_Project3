@@ -175,12 +175,18 @@ vector<Token> Parser::parse_expression() {
         if (t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV) {
         }
     } else if (t.token_type == NOT) {
+        // The operand of a unary operator (NOT) should be of type bool.
         expression.push_back(parse_unary_operator());
 
         vector<Token> temp = parse_expression();
         for (int i = 0; i < temp.size(); i++) {
             expression.push_back(temp.at(i));
         }
+
+        //t = temp.at(0);
+        //if (t.token_type == GREATER || t.token_type == LESS || t.token_type == GTEQ || t.token_type == LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL) {
+
+        //}
     } else {
         syntax_error();
     }

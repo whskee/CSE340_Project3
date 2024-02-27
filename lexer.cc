@@ -179,6 +179,59 @@ Token LexicalAnalyzer::ScanIdOrKeyword() {
     char c;
     input.GetChar(c);
 
+    //if (c == 't') {
+    //    input.GetChar(c);
+    //    if (c == 'r') {
+    //        input.GetChar(c);
+    //        if (c == 'u') {
+    //            input.GetChar(c);
+    //            if (c == 'e') {
+    //                token.token_type = TRUE;
+    //                return token;
+    //            } else {
+    //                input.UngetChar(c);
+    //                input.UngetChar('u');
+    //                input.UngetChar('r');
+    //            }
+    //        } else {
+    //            input.UngetChar(c);
+    //            input.UngetChar('r');
+    //        }
+    //    } else {
+    //        input.UngetChar(c);
+    //    }
+    //}
+    //else if (c == 'f') {
+    //    input.GetChar(c);
+    //    if (c == 'a') {
+    //        input.GetChar(c);
+    //        if (c == 'l') {
+    //            input.GetChar(c);
+    //            if (c == 's') {
+    //                input.GetChar(c);
+    //                if (c == 'e') {
+    //                    token.token_type = FALSE;
+    //                    return token;
+    //                } else {
+    //                    input.UngetChar(c);
+    //                    input.UngetChar('s');
+    //                    input.UngetChar('l');
+    //                    input.UngetChar('a');
+    //                }
+    //            } else {
+    //                input.UngetChar(c);
+    //                input.UngetChar('l');
+    //                input.UngetChar('a');
+    //            }
+    //        } else {
+    //            input.UngetChar(c);
+    //            input.UngetChar('a');
+    //        }
+    //    } else {
+    //        input.UngetChar(c);
+    //    }
+    //}
+
     if (isalpha(c)) {
         token.lexeme = "";
         while (!input.EndOfInput() && isalnum(c)) {

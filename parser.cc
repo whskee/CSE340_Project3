@@ -228,15 +228,19 @@ void Parser::parse_if_stmt() {
     vector<Token> expression = parse_expression();
 
     TokenType type = expression.at(0).token_type;
-    //cout << expression.at(0).token_type << "\n";
+    // cout << expression.at(0).token_type << "\n";
     if (type == NOT) {
-        if ((expression.at(1).token_type != TRUE && expression.at(1).token_type != FALSE) || (expression.at(2).token_type != TRUE && expression.at(2).token_type != FALSE)) {
+        if ((expression.at(1).token_type != TRUE && expression.at(1).token_type != FALSE)) {
             cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
             exit(1);
         }
     } else if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
         cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
         exit(1);
+        // if ((expression.at(1).token_type != TRUE && expression.at(1).token_type != FALSE) || (expression.at(2).token_type != TRUE && expression.at(2).token_type != FALSE)) {
+        //     cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
+        //     exit(1);
+        // }
     }
 
     // if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
@@ -270,7 +274,7 @@ void Parser::parse_while_stmt() {
     vector<Token> tokens = parse_expression();
 
     TokenType t = tokens.at(0).token_type;
-    if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL) {
+    if (t != GREATER && t != LESS && t != GTEQ && t != LTEQ && t != EQUAL && t != NOTEQUAL && t != NOT) {
         cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
     }
 

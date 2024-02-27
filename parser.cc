@@ -149,7 +149,6 @@ void Parser::parse_assignment_stmt() {
 
 // TODO: Fix
 vector<Token> Parser::parse_expression() {
-    // string expression;
     Token t = lexer.GetToken();
     lexer.UngetToken(t);
 

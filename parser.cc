@@ -225,29 +225,39 @@ Token Parser::parse_primary() {
 void Parser::parse_if_stmt() {
     consume(IF);
     consume(LPAREN);
-    vector<Token> tokens = parse_expression();
+    vector<Token> expression = parse_expression();
 
-    TokenType type = tokens.at(0).token_type;
-    if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
-        cout << "TYPE MISMATCH " << tokens.at(0).line_no << " C4\n";
-    } else {
-        for (int i = 1; i < tokens.size(); i++) {
-            string tokenType = "";
-            type = tokens.at(i).token_type;
-            if (type == NUM) {
-                tokenType = "int";
-            } else if (type == REALNUM) {
-                tokenType = "real";
-            } else if (type == TRUE) {
-                tokenType = "true";
-            } else if (type == FALSE) {
-                tokenType = "false";
-            } else {
-                cout << type << " NOT PRINTING\n";
-            }
-            cout << tokens.at(i).lexeme << ": " << tokenType << "\n";
+    TokenType type = expression.at(0).token_type;
+    if (type == NOT) {
+        if (expression.at(1).token_type != TRUE || expression.at(1).token_type != FALSE) {
+            cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
+            exit(1);
         }
+    } else if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
+        cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
+        exit(1);
     }
+
+    // if (type != GREATER && type != LESS && type != GTEQ && type != LTEQ && type != EQUAL && type != NOTEQUAL) {
+    //     cout << "TYPE MISMATCH " << expression.at(0).line_no << " C4\n";
+    // } else {
+    //     for (int i = 1; i < expression.size(); i++) {
+    //         string tokenType = "";
+    //         type = expression.at(i).token_type;
+    //         if (type == NUM) {
+    //             tokenType = "int";
+    //         } else if (type == REALNUM) {
+    //             tokenType = "real";
+    //         } else if (type == TRUE) {
+    //             tokenType = "true";
+    //         } else if (type == FALSE) {
+    //             tokenType = "false";
+    //         } else {
+    //             cout << type << " NOT PRINTING\n";
+    //         }
+    //         cout << expression.at(i).lexeme << ": " << tokenType << "\n";
+    //     }
+    // }
 
     consume(RPAREN);
     parse_body();

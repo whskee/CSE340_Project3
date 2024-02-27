@@ -1,9 +1,7 @@
 #include <set>
-#include <string>
 #include <vector>
 
 #include "lexer.h"
-using std::set;
 using std::string;
 using std::vector;
 
